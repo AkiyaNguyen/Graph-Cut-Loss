@@ -14,14 +14,10 @@ def train_one_epoch(
     model: nn.Module,
     loss_fn: Callable[[torch.Tensor, torch.Tensor], torch.Tensor],
     loader: DataLoader,
-    epochs: int = 5,
-    lr: float = 1e-3,
-    log_every_epoch: int = 1
+    optimizer,
+    device: torch.device
 ):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
     epoch_loss = 0.0
-    optimizer = optim.Adam(model.parameters(), lr=lr)
     model.train()
 
     for imgs, masks in loader:
