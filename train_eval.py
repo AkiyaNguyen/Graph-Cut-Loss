@@ -78,4 +78,6 @@ def metric_eval(model, test_dataset, metric_wrapper: metricWrapper, eval_device=
 
     for k, v in metric_wrapper.eval_items():
         print(f"{k}: {np.mean(v):.4f} ± {np.std(v):.4f}")
+        
+    return metric_wrapper.EvalResult
     
