@@ -18,6 +18,7 @@ def train_one_epoch(
     device: torch.device
 ):
     epoch_loss = 0.0
+    model = model.to(device)
     model.train()
 
     for imgs, masks in loader:
@@ -66,18 +67,26 @@ def train_model(
         if log_every_epoch != 0 and (ep + 1) % log_every_epoch == 0:
             print(f"Epoch {ep+1}/{epochs}, Loss: {avg_loss:.4f}")
 
-def metric_eval(model, test_dataset, metric_wrapper: metricWrapper, eval_device='cpu'):
+def metric_eval(model: nn.Module, test_loader: DataLoader, metric_wrapper: metricWrapper, eval_device='cpu'):
     model.eval()
-    model = model.to(eval_device)
-    test_loader = DataLoader(test_dataset, batch_size=1)
+    model.to(eval_device)
     
-    for data, target in tqdm(test_loader):
-        X, y = data.to(eval_device), target.to(eval_device)
-        pred = model(X) ## (B, 1, H, W)
-        metric_wrapper.update(pred, y)
+    metric_wrapper.reset()
 
+    with torch.no_grad():  
+        for data, target in test_loader:
+            X = data.to(eval_device)
+            y = target.to(eval_device)
+
+            pred = model(X)  # (B,1,H,W)
+            metric_wrapper.update(pred, y)
+
+    results = {}
     for k, v in metric_wrapper.eval_items():
-        print(f"{k}: {np.mean(v):.4f} ± {np.std(v):.4f}")
-        
-    return metric_wrapper.EvalResult
-    
+        v = np.array(v, dtype=float)
+        results[k] = {
+            "mean": float(np.mean(v)),
+            "std": float(np.std(v)),
+        }
+
+    return results

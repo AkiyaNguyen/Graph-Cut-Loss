@@ -17,7 +17,8 @@ class metricWrapper:
     
     def update(self, preds, targets):
         for k, func in self.MetricDict.items():
-            self.EvalResult[k].append(func(preds, targets))
+            self.EvalResult[k].append(func(preds, targets)) 
+
 
     def eval_items(self):
         return self.EvalResult.items()
