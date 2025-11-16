@@ -1,3 +1,9 @@
 venv/
 .env/
 .venv/
+
+./datasets
+./lossFunction
+./metrics
+./models
+./train_eval
