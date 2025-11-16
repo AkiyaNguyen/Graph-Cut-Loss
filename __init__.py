@@ -9,5 +9,5 @@ __all__ = [
     'GC_2D_Original',
     'metricWrapper',
      'iou_score', 'dice_score', 'sensitivity_score', 'specificity_score',
-    'train_model', 'metric_eval'
+    'train_model', 'metric_eval', 'train_one_epoch'
 ]
